@@ -5,11 +5,11 @@ import {
   RouteLocation,
   RouteRecordRaw
 } from 'vue-router'
-import LoginView from '../views/LoginView.vue'
-import LivestreamOptionsView from '../views/LivestreamOptionsView.vue'
-import LowerThirds from '../views/LowerThirds.vue'
-import Scoreboard from '../views/Scoreboard.vue'
-import Logout from '../views/Logout.vue'
+import LoginView from '../views/login/LoginView.vue'
+import LivestreamOptionsView from '../views/stream-settings/StreamSettingsView.vue'
+import LowerThirds from '../views/lower-thirds/LowerThirds.vue'
+import Scoreboard from '../views/scoreboard/Scoreboard.vue'
+import Logout from '../views/logout/Logout.vue'
 
 const defaultTitle = 'BLT'
 
@@ -20,7 +20,7 @@ const routes: Array<RouteRecordRaw> = [
   { name: 'logout', path: '/logout', component: Logout },
   {
     name: 'lower-thirds',
-    path: '/stream/lower-thirds/:port',
+    path: '/stream/lower-thirds',
     component: LowerThirds,
     meta: { title: 'Athletenanzeige' }
   },

@@ -1,25 +1,37 @@
 import { contextBridge } from 'electron'
-import { stateIpc } from './state-ipc'
-import { livestreamToolsApiIpc } from './livestream-tools-api-ipc'
-import { util } from './util'
-import { credentials } from './credentials'
+import { authIpc } from './ipc/auth-ipc'
+import { applicationSettingsIpc } from './ipc/application-settings-ipc'
+import { streamSettingsIpc } from './ipc/stream-settings-ipc'
+import { streamDataIpc } from './ipc/stream-data-ipc'
+import { utilIpc } from './ipc/util-ipc'
+import { apiIpc } from './ipc/api-ipc'
+import { stateIpc } from './ipc/state-ipc'
 
 if (process.contextIsolated) {
   try {
-    contextBridge.exposeInMainWorld('livestreamToolsApi', livestreamToolsApiIpc)
-    contextBridge.exposeInMainWorld('stateIpc', stateIpc)
-    contextBridge.exposeInMainWorld('util', util)
-    contextBridge.exposeInMainWorld('credentials', credentials)
+    contextBridge.exposeInMainWorld('auth', authIpc)
+    contextBridge.exposeInMainWorld('applicationSettings', applicationSettingsIpc)
+    contextBridge.exposeInMainWorld('streamSettings', streamSettingsIpc)
+    contextBridge.exposeInMainWorld('streamData', streamDataIpc)
+    contextBridge.exposeInMainWorld('util', utilIpc)
+    contextBridge.exposeInMainWorld('api', apiIpc)
+    contextBridge.exposeInMainWorld('stateSync', stateIpc)
   } catch (error) {
     console.error(error)
   }
 } else {
   // @ts-ignore (define in dts)
-  window.livestreamToolsApi = livestreamToolsApiIpc
+  window.auth = authIpc
   // @ts-ignore (define in dts)
-  window.stateIpc = stateIpc
+  window.applicationSettings = applicationSettingsIpc
   // @ts-ignore (define in dts)
-  window.util = util
+  window.streamSettings = streamSettingsIpc
   // @ts-ignore (define in dts)
-  window.credentials = credentials
+  window.streamData = streamDataIpc
+  // @ts-ignore (define in dts)
+  window.util = utilIpc
+  // @ts-ignore (define in dts)
+  window.api = apiIpc
+  // @ts-ignore (define in dts)
+  window.stateSync = stateIpc
 }
