@@ -1,104 +1,8 @@
-import { app, BrowserWindow, ipcMain } from 'electron'
-import { join } from 'path'
-import { electronApp, is, optimizer } from '@electron-toolkit/utils'
-import icon from '../../resources/icon.png?asset'
-import livestreamToolsApi from './livestreamToolsApi'
-import * as http from 'http'
-import { StateHolder } from './state'
-import { State } from '../shared/models/state'
-import {
-  clearCredentials,
-  credentialsAvailable,
-  credentialsStorageAvailable,
-  loadCredentials,
-  saveCredentials
-} from './credentials'
-import { Credentials } from '../shared/models/credentials'
-import IpcMainEvent = Electron.IpcMainEvent
-import IpcMainInvokeEvent = Electron.IpcMainInvokeEvent
-
-let stateHolder: StateHolder | undefined
-
-function createWindow(): BrowserWindow {
-  // Create the browser window.
-  const mainWindow = new BrowserWindow({
-    width: 1150,
-    height: 900,
-    minWidth: 1100,
-    minHeight: 700,
-    show: false,
-    titleBarStyle: process.platform === 'darwin' ? 'hiddenInset' : 'default',
-    frame: process.platform !== 'darwin',
-    autoHideMenuBar: true,
-    ...(process.platform === 'linux' ? { icon } : {}),
-    webPreferences: {
-      preload: join(__dirname, '../preload/index.js'),
-      sandbox: false,
-      webSecurity: false
-    }
-  })
-
-  mainWindow.on('ready-to-show', () => {
-    mainWindow.show()
-  })
-
-  mainWindow.webContents.setWindowOpenHandler(() => {
-    return {
-      action: 'allow',
-      overrideBrowserWindowOptions: {
-        autoHideMenuBar: true,
-        transparent: true,
-        frame: false,
-        webPreferences: {
-          preload: join(__dirname, '../preload/index.js'),
-          contextIsolation: false,
-          webSecurity: false
-        }
-      }
-    }
-  })
-
-  // HMR for renderer base on electron-vite cli.
-  // Load the remote URL for development or the local html file for production.
-  if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-    mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
-  } else {
-    mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
-  }
-
-  return mainWindow
-}
-
-function createStateHolder(): StateHolder {
-  const stateHolder = new StateHolder()
-
-  stateHolder.registerCallback((state: State) => {
-    BrowserWindow.getAllWindows().forEach((window) => {
-      window.webContents.send('state-update-renderer', JSON.stringify(state))
-    })
-  })
-
-  ipcMain.on('state-update', (_: IpcMainEvent, state: string) => {
-    stateHolder.setState(JSON.parse(state))
-  })
-
-  ipcMain.handle('vuex-connect', async () => {
-    const state = stateHolder.getState()
-    return JSON.stringify(state)
-  })
-
-  return stateHolder
-}
-
-function createCredentialsStorage() {
-  ipcMain.handle('credentials-available', credentialsAvailable)
-  ipcMain.handle('credentials-storage-available', credentialsStorageAvailable)
-  ipcMain.on('save-credentials', (_: IpcMainEvent, credentials: Credentials) => {
-    saveCredentials(credentials)
-  })
-  ipcMain.handle('load-credentials', loadCredentials)
-  ipcMain.on('clear-credentials', clearCredentials)
-}
+import { app, BrowserWindow } from 'electron'
+import { electronApp, optimizer } from '@electron-toolkit/utils'
+import { createMainWindow } from './features/window'
+import { setupVuexStateSync } from './features/vuex-state-sync'
+import { setupIpcControllers } from './features/ipc'
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -114,31 +18,14 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  stateHolder = createStateHolder()
-  createCredentialsStorage()
-  const mainWindow = createWindow()
-
-  let expressApp: http.Server | null = null
-  ipcMain.on(
-    'start-api',
-    (_: IpcMainEvent, args) => (expressApp = livestreamToolsApi(mainWindow, args.port))
-  )
-  ipcMain.on('stop-api', () => expressApp?.close())
-  ipcMain.on('close-all-windows-except-main', () => {
-    BrowserWindow.getAllWindows().forEach((window) => {
-      if (window.id !== mainWindow.id) {
-        window.close()
-      }
-    })
-  })
-  ipcMain.handle('is-main-window', async (event: IpcMainInvokeEvent) => {
-    return event.sender.id === mainWindow.id
-  })
+  createMainWindow()
+  setupVuexStateSync()
+  setupIpcControllers()
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
+    if (BrowserWindow.getAllWindows().length === 0) createMainWindow()
   })
 })
 
@@ -149,10 +36,4 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
   }
-})
-
-// In this file you can include the rest of your app"s specific main process
-// code. You can also put them in separate files and require them here.
-app.on('before-quit', () => {
-  stateHolder?.saveToDisk()
 })
