@@ -6,6 +6,7 @@ import {
   ScoreboardEntrySquat
 } from '../../shared/src/models/vportal-models'
 import { ipcRenderer } from 'electron'
+import { ScoreboardType } from '../../shared/src/models/stream-settings-models'
 
 export interface IStreamDataIpc {
   getActiveAthleteAttempt: () => Promise<AthleteAttempt>
@@ -13,6 +14,7 @@ export interface IStreamDataIpc {
   getSquatScoreboard: () => Promise<ScoreboardEntrySquat[]>
   getBenchPressScoreboard: () => Promise<ScoreboardEntryBenchPress[]>
   getDeadliftScoreboard: () => Promise<ScoreboardEntryDeadlift[]>
+  getSelectedScoreboardGroupName: (scoreboardType: ScoreboardType) => Promise<string>
 }
 
 export const enum StreamDataIpcChannel {
@@ -20,7 +22,8 @@ export const enum StreamDataIpcChannel {
   GetOverallScoreboard = 'stream-data:get-overall-scoreboard',
   GetSquatScoreboard = 'stream-data:get-squat-scoreboard',
   GetBenchPressScoreboard = 'stream-data:get-bench-press-scoreboard',
-  GetDeadliftScoreboard = 'stream-data:get-deadlift-scoreboard'
+  GetDeadliftScoreboard = 'stream-data:get-deadlift-scoreboard',
+  GetSelectedScoreboardGroupName = 'stream-data:get-selected-scoreboard-group-name'
 }
 
 export const streamDataIpc: IStreamDataIpc = {
@@ -38,5 +41,8 @@ export const streamDataIpc: IStreamDataIpc = {
   },
   getDeadliftScoreboard(): Promise<ScoreboardEntryDeadlift[]> {
     return ipcRenderer.invoke(StreamDataIpcChannel.GetDeadliftScoreboard)
+  },
+  getSelectedScoreboardGroupName(scoreboardType: ScoreboardType): Promise<string> {
+    return ipcRenderer.invoke(StreamDataIpcChannel.GetSelectedScoreboardGroupName, scoreboardType)
   }
 }

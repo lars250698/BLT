@@ -8,6 +8,7 @@ import {
 import * as streamDataRepository from '../repository/vportal/stream-data-repository'
 import { StreamSettingsState } from '../state/settings/stream-settings'
 import { getOffset } from '../util/utils'
+import { ScoreboardType } from '../../shared/src/models/stream-settings-models'
 
 export function getActiveAthleteAttempt(): Promise<AthleteAttempt> {
   const settings = StreamSettingsState.get()
@@ -61,4 +62,32 @@ export function getDeadliftScoreboard(): Promise<ScoreboardEntryDeadlift[]> {
       settings.deadliftScoreboardSettings.pageSize
     )
   )
+}
+
+export function getSelectedScoreboardGroupName(scoreboardType: ScoreboardType): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const settings = StreamSettingsState.get()
+    let selectedId = ''
+    switch (scoreboardType) {
+      case ScoreboardType.Overall:
+      case ScoreboardType.All:
+        selectedId = settings.overallScoreboardSettings.selectedBodyWeightCategoryId
+        break
+      case ScoreboardType.Squat:
+        selectedId = settings.squatScoreboardSettings.selectedBodyWeightCategoryId
+        break
+      case ScoreboardType.Bench:
+        selectedId = settings.benchPressScoreboardSettings.selectedBodyWeightCategoryId
+        break
+      case ScoreboardType.Deadlift:
+        selectedId = settings.deadliftScoreboardSettings.selectedBodyWeightCategoryId
+        break
+    }
+    const group = settings.availableBodyWeightCategories.find((group) => group.id === selectedId)
+    if (!group) {
+      reject(new Error('Selected group is not in available groups'))
+    } else {
+      resolve(`${group.ageCategoryName} ${group.name}`)
+    }
+  })
 }

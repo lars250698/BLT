@@ -3,6 +3,7 @@ import { onBeforeMount, onUnmounted, ref } from 'vue'
 import { prettyPrintLot, prettyPrintWeight } from '../../../../../shared/src/util/pretty-print'
 import { ScoreboardEntryOverall } from '../../../../../shared/src/models/vportal-models'
 import { padToSize } from '../../../../../shared/src/util/array-utils'
+import FadeOutIn from '../../../components/transitions/FadeOutIn.vue'
 
 interface ScoreboardEntry {
   name: string
@@ -90,28 +91,33 @@ onUnmounted(() => {
     :key="idx"
     class="flex flex-col w-full h-8 even:bg-gray-700 odd:bg-gray-500 opacity-80"
   >
-    <div class="flex flex-row w-full h-full px-2 justify-between text-white items-center">
-      <div class="flex flex-row justify-between w-5/6">
-        <div class="flex flex-row justify-start w-3/5">
-          <div v-if="athlete.name" class="mx-1 flex flex-row justify-center w-6">
-            {{ idx + 1 }}
+    <FadeOutIn>
+      <div
+        :key="athlete.name"
+        class="flex flex-row w-full h-full px-2 justify-between text-white items-center"
+      >
+        <div class="flex flex-row justify-between w-5/6">
+          <div class="flex flex-row justify-start w-3/5">
+            <div v-if="athlete.name" class="mx-1 flex flex-row justify-center w-6">
+              {{ idx + 1 }}
+            </div>
+            <div v-else class="mx-1 flex flex-row justify-center w-6"></div>
+            <div class="mx-1 flex flex-row justify-center w-16">{{ athlete.bodyWeight }}</div>
+            <div class="mx-1 flex flex-row justify-center w-10">{{ athlete.lot }}</div>
+            <div class="mx-1 flex flex-row justify-start w-96">{{ athlete.name }}</div>
           </div>
-          <div v-else class="mx-1 flex flex-row justify-center w-6"></div>
-          <div class="mx-1 flex flex-row justify-center w-16">{{ athlete.bodyWeight }}</div>
-          <div class="mx-1 flex flex-row justify-center w-10">{{ athlete.lot }}</div>
-          <div class="mx-1 flex flex-row justify-start w-96">{{ athlete.name }}</div>
+          <div class="flex flex-row justify-end w-2/5">
+            <div class="mx-2 flex flex-row justify-center w-16">{{ athlete.bestSquat }}</div>
+            <div class="mx-2 flex flex-row justify-center w-16">{{ athlete.bestBench }}</div>
+            <div class="mx-2 flex flex-row justify-center w-16">{{ athlete.bestDeadlift }}</div>
+          </div>
         </div>
-        <div class="flex flex-row justify-end w-2/5">
-          <div class="mx-2 flex flex-row justify-center w-16">{{ athlete.bestSquat }}</div>
-          <div class="mx-2 flex flex-row justify-center w-16">{{ athlete.bestBench }}</div>
-          <div class="mx-2 flex flex-row justify-center w-16">{{ athlete.bestDeadlift }}</div>
+        <div class="flex flex-row justify-end w-36 items-center">
+          <div class="mr-2 flex flex-row justify-center w-16">{{ athlete.total }}</div>
+          <div class="ml-2 flex flex-row justify-center w-16">{{ athlete.prognosis }}</div>
         </div>
       </div>
-      <div class="flex flex-row justify-end w-36 items-center">
-        <div class="mr-2 flex flex-row justify-center w-16">{{ athlete.total }}</div>
-        <div class="ml-2 flex flex-row justify-center w-16">{{ athlete.prognosis }}</div>
-      </div>
-    </div>
+    </FadeOutIn>
   </div>
 </template>
 

@@ -32,7 +32,7 @@ function openLowerThirds() {
 
 function openScoreboard() {
   const r = router.resolve({ name: 'scoreboard' })
-  window.util.openNewStreamOverlayWindow(fixedWindow(r.href, 1050, 630))
+  window.util.openNewStreamOverlayWindow(fixedWindow(r.href, 1050, 700))
 }
 
 function fixedWindow(path: string, width: number, height: number) {

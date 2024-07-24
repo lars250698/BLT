@@ -22,6 +22,7 @@ export async function getInitialStreamSettings(): Promise<StreamSettings> {
   const availableStages = await getAvailableStages(client, competitionId)
   const compData = await competitionData(client, competitionId)
   const groups = getAvailableGroupsFromCompData(compData)
+  const bodyWeightCategories = getAvailableBodyWeightCategoriesFromCompData(compData)
   const activeGroupIds = await activeGroup(client, competitionId)
   const defaultBodyWeightCategory =
     compData.competition.competitionGroupList?.competitionGroups?.[0]?.eventBodyWeightCategoryList
@@ -38,6 +39,7 @@ export async function getInitialStreamSettings(): Promise<StreamSettings> {
     availableCompetitionStages: availableStages,
     selectedCompetitionStageId: availableStages[0].id,
     availableGroups: groups,
+    availableBodyWeightCategories: bodyWeightCategories,
     activeGroupIds: activeGroupIds,
     overallScoreboardSettings: {
       selectedBodyWeightCategoryId: defaultBodyWeightCategory,
@@ -72,9 +74,11 @@ export async function refreshStreamSettings(oldSettings: StreamSettings): Promis
   const availableStages = await getAvailableStages(client, competitionId)
   const compData = await competitionData(client, competitionId)
   const groups = getAvailableGroupsFromCompData(compData)
+  const bodyWeightCategories = getAvailableBodyWeightCategoriesFromCompData(compData)
   const activeGroupIds = await activeGroup(client, competitionId)
   oldSettings.availableCompetitionStages = availableStages
   oldSettings.availableGroups = groups
+  oldSettings.availableBodyWeightCategories = bodyWeightCategories
   oldSettings.activeGroupIds = activeGroupIds
   oldSettings.overallScoreboardSettings.availablePages = await getAvailablePages(
     client,
@@ -152,6 +156,20 @@ function getAvailableGroupsFromCompData(
           }
         )
       }
+    }) ?? []
+  )
+}
+
+function getAvailableBodyWeightCategoriesFromCompData(
+  compData: CompetitionDataQueryResult
+): Array<BodyWeightCategory> {
+  return (
+    compData.competition.eventBodyWeightCategoryList?.eventBodyWeightCategories?.map((category) => {
+      return {
+        id: category.id,
+        name: category.name,
+        ageCategoryName: category.eventAgeCategory.name
+      } as BodyWeightCategory
     }) ?? []
   )
 }

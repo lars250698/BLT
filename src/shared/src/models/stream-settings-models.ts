@@ -3,6 +3,7 @@ export interface StreamSettings {
   availableCompetitionStages: CompetitionStage[]
   selectedCompetitionStageId: string
   availableGroups: CompetitionGroup[]
+  availableBodyWeightCategories: BodyWeightCategory[]
   activeGroupIds: string[]
   overallScoreboardSettings: ScoreboardSettings
   squatScoreboardSettings: ScoreboardSettings
