@@ -175,7 +175,7 @@ async function getAthletes(
   const client = VportalConnection.getInstance()
   const scoreboardQueryResult = await scoreboard(client, competitionId, bodyWeightCategoryId)
   const athletes = limitOffset(
-    scoreboardQueryResult.competitionAthleteList?.competitionAthletes ?? [],
+    scoreboardQueryResult.competition.competitionAthleteList?.competitionAthletes ?? [],
     limit,
     offset
   )
@@ -222,7 +222,7 @@ function getUpcomingAttempt(
 }
 
 function getPlacement(athleteId: string, scoreboard: ScoreboardQueryResult): number | undefined {
-  const idx = scoreboard.competitionAthleteList.competitionAthletes
+  const idx = scoreboard.competition.competitionAthleteList.competitionAthletes
     ?.map((athlete) => athlete.id)
     ?.indexOf(athleteId)
   return idx !== undefined ? idx + 1 : undefined

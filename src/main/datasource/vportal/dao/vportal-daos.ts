@@ -57,8 +57,10 @@ export interface ActiveAthleteQueryResult {
 }
 
 export interface ScoreboardQueryResult {
-  competitionAthleteList: {
-    competitionAthletes: [CompetitionAthlete] | undefined
+  competition: {
+    competitionAthleteList: {
+      competitionAthletes: [CompetitionAthlete] | undefined
+    }
   }
 }
 

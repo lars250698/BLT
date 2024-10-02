@@ -1,10 +1,10 @@
 import { ipcMain } from 'electron'
 import { UtilIpcChannel } from '../../../preload/ipc/util-ipc'
 import { WindowInstances } from '../../state/window/main-window'
-import IpcMainInvokeEvent = Electron.IpcMainInvokeEvent
-import IpcMainEvent = Electron.IpcMainEvent
 import { OpenNewStreamOverlayWindowProps } from '../../../shared/src/props/util-props'
 import { createTransparentWindow } from '../../features/window'
+import IpcMainInvokeEvent = Electron.IpcMainInvokeEvent
+import IpcMainEvent = Electron.IpcMainEvent
 
 export default function () {
   ipcMain.handle(UtilIpcChannel.GetPlatform, async () => {

@@ -8,8 +8,8 @@ import {
   getSelectedScoreboardGroupName,
   getSquatScoreboard
 } from '../../features/stream-data'
-import IpcMainInvokeEvent = Electron.IpcMainInvokeEvent
 import { ScoreboardType } from '../../../shared/src/models/stream-settings-models'
+import IpcMainInvokeEvent = Electron.IpcMainInvokeEvent
 
 export default function () {
   ipcMain.handle(StreamDataIpcChannel.GetActiveAthleteAttempt, getActiveAthleteAttempt)

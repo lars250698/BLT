@@ -1,6 +1,6 @@
 import { ipcRenderer } from 'electron'
-import IpcRendererEvent = Electron.IpcRendererEvent
 import { SharedState } from '../../shared/src/models/state-models'
+import IpcRendererEvent = Electron.IpcRendererEvent
 
 export interface IStateIpc {
   connect: () => Promise<SharedState>

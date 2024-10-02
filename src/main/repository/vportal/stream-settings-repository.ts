@@ -182,10 +182,10 @@ async function getAvailablePages(
 ): Promise<number> {
   const res = await scoreboard(client, competitionId, categoryId)
   if (
-    res.competitionAthleteList.competitionAthletes &&
-    res.competitionAthleteList.competitionAthletes.length > 0
+    res.competition.competitionAthleteList.competitionAthletes &&
+    res.competition.competitionAthleteList.competitionAthletes.length > 0
   ) {
-    const pg = res.competitionAthleteList.competitionAthletes.length / pageSize
+    const pg = res.competition.competitionAthleteList.competitionAthletes.length / pageSize
     if (pg % 1 === 0) {
       return pg
     } else {

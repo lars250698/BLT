@@ -1,5 +1,4 @@
 import { ipcMain } from 'electron'
-import IpcMainInvokeEvent = Electron.IpcMainInvokeEvent
 import { LoginProps } from '../../../shared/src/props/auth-props'
 import { login, logout } from '../../features/auth'
 import {
@@ -10,6 +9,7 @@ import {
 } from '../../features/credentials-storage'
 import { AuthIpcChannel } from '../../../preload/ipc/auth-ipc'
 import { VportalConnection } from '../../state/vportal/vportal-connection'
+import IpcMainInvokeEvent = Electron.IpcMainInvokeEvent
 
 export default function () {
   ipcMain.handle(AuthIpcChannel.Login, (_: IpcMainInvokeEvent, props: LoginProps) => {

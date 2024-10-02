@@ -2,7 +2,6 @@
 import { onBeforeMount, onUnmounted, ref } from 'vue'
 import {
   AttemptStatus,
-  ScoreboardEntryDeadlift,
   ScoreboardEntrySquat
 } from '../../../../../shared/src/models/vportal-models'
 import { prettyPrintLot, prettyPrintWeight } from '../../../../../shared/src/util/pretty-print'

@@ -4,7 +4,6 @@ import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useToast } from 'vue-toastification'
 import { Credentials, LoginProps } from '../../../../../shared/src/props/auth-props'
-import { ScoreboardType } from '../../../../../shared/src/models/stream-settings-models'
 
 const router = useRouter()
 const toast = useToast()
@@ -42,7 +41,6 @@ function onLoggedIn() {
 
 onMounted(() => {
   window.auth.savedCredentialsAvailable().then((savedCredentialsAvailable) => {
-    isLoading.value = true
     if (savedCredentialsAvailable) {
       window.auth
         .loginWithSavedCredentials()
