@@ -1,6 +1,6 @@
 {
   "name": "blt",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "description": "Livestream Goodies",
   "main": "./out/main/index.js",
   "author": "eppinger.dev",
@@ -27,7 +27,8 @@
     "axios": "^1.7.2",
     "cors": "^2.8.5",
     "express": "^4.19.2",
-    "graphql-request": "5.1.0",
+    "graphql": "^16.9.0",
+    "graphql-request": "^5.1.0",
     "mustache": "^4.2.0",
     "ts-node": "^10.9.2",
     "vue-loading-overlay": "^6.0.4",
